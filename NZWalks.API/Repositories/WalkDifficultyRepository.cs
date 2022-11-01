@@ -22,5 +22,12 @@ namespace NZWalks.API.Repositories
 
             return _mapper.Map<IEnumerable<WalkDifficultyDTO>>(walks);
         }
+
+        public async Task<WalkDifficultyDTO> GetAsync(Guid id)
+        {
+            var walk = await _nZWalksDbContext.WalkDifficulties.FirstOrDefaultAsync(x => x.Id == id);
+
+            return _mapper.Map<WalkDifficultyDTO>(walk);
+        }
     }
 }

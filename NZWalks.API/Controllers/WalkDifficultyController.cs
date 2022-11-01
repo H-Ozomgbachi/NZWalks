@@ -21,5 +21,16 @@ namespace NZWalks.API.Controllers
             var result = await _walkDifficultyRepository.GetAllAsync();
             return Ok(result);
         }
+
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetOneAsync(Guid id)
+        {
+            var result = await _walkDifficultyRepository.GetAsync(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
     }
 }
