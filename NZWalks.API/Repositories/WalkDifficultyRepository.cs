@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using NZWalks.API.Data;
+using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
 
 namespace NZWalks.API.Repositories
@@ -16,6 +17,20 @@ namespace NZWalks.API.Repositories
             _mapper = mapper;
         }
 
+        public async Task<WalkDifficulty> AddAsync(WalkDifficulty walk)
+        {
+            walk.Id = Guid.NewGuid();
+            var newWalkDifficulty = _nZWalksDbContext.WalkDifficulties.Add(walk);
+            await _nZWalksDbContext.SaveChangesAsync();
+            return newWalkDifficulty.Entity;
+        }
+
+        public async Task DeleteAsync(WalkDifficulty walkDifficulty)
+        {
+            _nZWalksDbContext.Remove(walkDifficulty);
+            await _nZWalksDbContext.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<WalkDifficultyDTO>> GetAllAsync()
         {
             var walks = await _nZWalksDbContext.WalkDifficulties.ToListAsync();
@@ -23,11 +38,18 @@ namespace NZWalks.API.Repositories
             return _mapper.Map<IEnumerable<WalkDifficultyDTO>>(walks);
         }
 
-        public async Task<WalkDifficultyDTO> GetAsync(Guid id)
+        public async Task<WalkDifficulty> GetAsync(Guid id)
         {
             var walk = await _nZWalksDbContext.WalkDifficulties.FirstOrDefaultAsync(x => x.Id == id);
 
-            return _mapper.Map<WalkDifficultyDTO>(walk);
+            return walk;
+        }
+
+        public async Task<WalkDifficulty> UpdateAsync(WalkDifficulty walk)
+        {
+            var updated = _nZWalksDbContext.Update(walk);
+            await _nZWalksDbContext.SaveChangesAsync();
+            return updated.Entity;
         }
     }
 }
